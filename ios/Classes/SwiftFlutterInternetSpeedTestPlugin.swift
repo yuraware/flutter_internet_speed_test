@@ -127,7 +127,7 @@ public class SwiftInternetSpeedTestPlugin: NSObject, FlutterPlugin {
                             var argsMap: [String: Any] = [:]
                             argsMap["id"] = currentListenerId
                             argsMap["transferRate"] = self.getSpeedInBytes(speed: finalSpeed)
-                            argsMap["percent"] = 50
+                            argsMap["percent"] = 100
                             argsMap["type"] = 0
                             
                             DispatchQueue.main.async {
@@ -140,7 +140,8 @@ public class SwiftInternetSpeedTestPlugin: NSObject, FlutterPlugin {
                             var argsMap: [String: Any] = [:]
                             argsMap["id"] = currentListenerId
                             argsMap["speedTestError"] = error.localizedDescription
-                            argsMap["type"] = 1
+                            // TODO: YK fix type, complete - 0, error - 2
+                            argsMap["type"] = 0
                             DispatchQueue.main.async {
                                 SwiftInternetSpeedTestPlugin.channel.invokeMethod("callListener", arguments: argsMap)
                             }

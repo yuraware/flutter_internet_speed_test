@@ -5,6 +5,8 @@ class CustomHostUploadService: NSObject, SpeedService {
     private var latestDate: Date?
     private var current: ((Speed, Speed) -> ())!
     private var final: ((Result<Speed, NetworkError>) -> ())!
+    private var bytesSent: Int64 = 0
+    private var latestSpeed: Speed?
     
     private var task: URLSessionTask?
     
@@ -50,20 +52,40 @@ extension CustomHostUploadService: URLSessionTaskDelegate {
         let current = calculate(bytes: bytesSent, seconds: timeSpend)
         let average = calculate(bytes: totalBytesSent, seconds: -startDate.timeIntervalSinceNow)
         
+        latestSpeed = current
         latestDate = currentTime
         
         self.current(current, average)
     }
     
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+        
+        if let speed = self.latestSpeed {
+            self.final(.value(speed))
+            responseDate = nil
+            return
+        }
+        
         if error != nil {
+            
+            // TODO: YK make a custom complete callback (value, error)
+            
             self.final(.error(NetworkError.requestFailed))
             responseDate = nil
         }
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        
+        if let speed = self.latestSpeed {
+            self.final(.value(speed))
+            responseDate = nil
+            return
+        }
+        
         if error != nil {
+            
+            // TODO: YK make a custom complete callback (value, error)
             self.final(.error(NetworkError.requestFailed))
             responseDate = nil
         }

@@ -216,6 +216,8 @@ class FlutterInternetSpeedTestPlugin : FlutterPlugin, MethodCallHandler, Activit
             }
         })
 //        speedTestSocket.startFixedUpload(testServer, 10000000, 20000, 100)
+
+        // TODO: make timeout as a parameter sent from Flutter package
         speedTestSocket.startUploadRepeat(testServer,
             defaultTestTimeoutInMillis,
             defaultResponseDelayInMillis,
